@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, FlatList, AsyncStorage, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, FlatList, AsyncStorage, ScrollView, Animated} from 'react-native';
 import { connect } from 'react-redux';
 import mapStateToProps from '../components/state'
 import {Pulse} from "react-native-loader";
@@ -8,11 +8,25 @@ class HomeScreen extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            game: null
+            game: null,
+            widthAnime: new Animated.Value(0)
         }
     }
 
+    static navigationOptions = {
+        header: null
+    };
+
     componentDidMount(){
+
+        Animated.timing(
+            this.state.widthAnime,
+            {
+                toValue: 30,
+                duration: 1000,
+            }
+        ).start();
+
 
         AsyncStorage.getItem("nameGame").then((value) => {
                 if (value) {
@@ -36,10 +50,13 @@ class HomeScreen extends React.Component {
     }
 
     render() {
+        let { widthAnime } = this.state;
+        const { navigate } = this.props.navigation;
+
         if (!this.state.games) {
             return (
                 <View style={styles.containerLoader}>
-                    <Pulse size={15} color="#fff" />
+                    <Pulse size={30} color="#fff" />
                 </View>
             );
         } else {
@@ -49,10 +66,18 @@ class HomeScreen extends React.Component {
                         <Text style={styles.lastgame}>Last game: {this.props.nameGame}</Text>
                         <Text style={styles.title}> Games List </Text>
                         <FlatList
+                            style={styles.flatlist}
                             data={this.state.games}
-                            renderItem={({item}) => <Text style={styles.item} onPress={
-                                () => this.props.navigation.navigate('Info', {idGame: item.id})}>{item.name}</Text>}
-                            keyExtractor={({id}) => id}
+                            renderItem={({item}) =>
+                                <View style={styles.contentItem}>
+                                    <Text style={styles.item} onPress={() => this.props.navigation.navigate('Info', {idGame: item.id})}>{item.name}</Text>
+                                    <Animated.View style={{
+                                        ...styles.underline,
+                                        width: widthAnime
+                                    }}>
+                                    </Animated.View>
+                                </View>}
+                            keyExtractor={({id}) => id.toString()}
                         />
                     </View>
                 </ScrollView>
@@ -62,10 +87,6 @@ class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    wrapper: {
-        height: '100%',
-        width: '100%'
-    },
     containerLoader: {
         flex: 1,
         alignItems: 'center',
@@ -73,10 +94,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#74b9ff'
     },
     container: {
+        paddingTop: '20%',
         backgroundColor: '#74b9ff',
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+    },
+    flatlist: {
+        paddingBottom: '100%'
     },
     lastgame: {
         color: '#fff',
@@ -94,18 +118,27 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         textTransform: 'uppercase'
     },
-    item: {
-        textAlign: 'center',
-        alignSelf: 'flex-start',
-        paddingHorizontal: '8%',
-        paddingVertical: '5%',
-        marginTop: '5%',
-        marginHorizontal: '8%',
+    contentItem: {
+        position: 'relative',
         backgroundColor: '#fff',
+        marginHorizontal: '8%',
+        paddingHorizontal: '15%',
+        paddingVertical: '8%',
+        marginVertical: '3%'
+    },
+    item: {
+        alignSelf: 'center',
         color: '#74b9ff',
         fontSize: 20,
         fontWeight: 'bold',
-        width: '100%'
+    },
+    underline: {
+        position: 'absolute',
+        bottom: 0,
+        left: -10,
+        height: '50%',
+        backgroundColor: '#fab1a0',
+        alignSelf: 'flex-start',
     }
 });
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, Linking} from 'react-native';
+import {goBack} from 'react-navigation'
 import { Pulse } from 'react-native-loader';
 import { connect } from 'react-redux';
 import mapStateToProps from '../components/state'
@@ -11,6 +12,10 @@ class InfoScreen extends React.Component {
             idGame: this.props.navigation.state.params.idGame
         };
     }
+
+    static navigationOptions = {
+        header: null
+    };
 
     componentDidMount(){
         return fetch(`https://androidlessonsapi.herokuapp.com/api/game/details?game_id=${this.state.idGame}`, {
@@ -42,6 +47,8 @@ class InfoScreen extends React.Component {
     }
 
     render() {
+        const { navigate } = this.props.navigation;
+        const { goBack } = this.props.navigation;
         if (!this.state.titleGame) {
             return (
                 <View style={styles.containerLoader}>
@@ -51,6 +58,7 @@ class InfoScreen extends React.Component {
         } else {
             return (
                 <View style={styles.container}>
+                    <Text onPress={() => goBack()} style={styles.goback}> {'<'} Back </Text>
                     <Text style={styles.title}>{this.state.titleGame}</Text>
                     <View style={styles.contentinfo}>
                         <Text style={styles.infogame}>Player: {this.state.playerGame}</Text>
@@ -91,6 +99,16 @@ const styles = StyleSheet.create({
         marginVertical: '0.25%',
         color: '#fff',
         fontStyle: 'italic'
+    },
+    goback: {
+        paddingTop: '20%',
+        color: '#fab1a0',
+        backgroundColor: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        width: '100%',
+        paddingLeft: '2%'
     },
     title: {
         fontSize: 30,
