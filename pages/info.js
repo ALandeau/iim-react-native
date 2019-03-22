@@ -8,8 +8,7 @@ class InfoScreen extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            game: "",
-            idGame: this.props.navigation.state.params.idGame,
+            idGame: this.props.navigation.state.params.idGame
         };
     }
 

@@ -2,11 +2,14 @@ import React from 'react';
 import {StyleSheet, Text, View, FlatList, AsyncStorage, ScrollView} from 'react-native';
 import { connect } from 'react-redux';
 import mapStateToProps from '../components/state'
+import {Pulse} from "react-native-loader";
 
 class HomeScreen extends React.Component {
     constructor(props){
         super(props);
-        this.state ={ games: "" }
+        this.state = {
+            game: null
+        }
     }
 
     componentDidMount(){
@@ -33,20 +36,28 @@ class HomeScreen extends React.Component {
     }
 
     render() {
-        return (
-            <ScrollView style={styles.wrapper}>
-                <View style={styles.container}>
-                    <Text style={styles.lastgame}>Last game: {this.props.nameGame}</Text>
-                    <Text style={styles.title}> Games List </Text>
-                    <FlatList
-                        data={this.state.games}
-                        renderItem={({item}) => <Text style={styles.item} onPress={
-                            () => this.props.navigation.navigate('Info', {idGame: item.id})}>{item.name}</Text>}
-                        keyExtractor={({id}) => id}
-                    />
+        if (!this.state.games) {
+            return (
+                <View style={styles.containerLoader}>
+                    <Pulse size={15} color="#fff" />
                 </View>
-            </ScrollView>
-        );
+            );
+        } else {
+            return (
+                <ScrollView style={styles.wrapper}>
+                    <View style={styles.container}>
+                        <Text style={styles.lastgame}>Last game: {this.props.nameGame}</Text>
+                        <Text style={styles.title}> Games List </Text>
+                        <FlatList
+                            data={this.state.games}
+                            renderItem={({item}) => <Text style={styles.item} onPress={
+                                () => this.props.navigation.navigate('Info', {idGame: item.id})}>{item.name}</Text>}
+                            keyExtractor={({id}) => id}
+                        />
+                    </View>
+                </ScrollView>
+            );
+        }
     }
 }
 
@@ -54,6 +65,12 @@ const styles = StyleSheet.create({
     wrapper: {
         height: '100%',
         width: '100%'
+    },
+    containerLoader: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#74b9ff'
     },
     container: {
         backgroundColor: '#74b9ff',
