@@ -23,7 +23,7 @@ class HomeScreen extends React.Component {
             this.state.widthAnime,
             {
                 toValue: 30,
-                duration: 1000,
+                duration: 1500,
             }
         ).start();
 

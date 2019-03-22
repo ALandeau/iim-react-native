@@ -1,6 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, Linking} from 'react-native';
-import {goBack} from 'react-navigation'
+import {StyleSheet, Text, View, Linking, ScrollView} from 'react-native';
 import { Pulse } from 'react-native-loader';
 import { connect } from 'react-redux';
 import mapStateToProps from '../components/state'
@@ -57,19 +56,21 @@ class InfoScreen extends React.Component {
             );
         } else {
             return (
-                <View style={styles.container}>
-                    <Text onPress={() => goBack()} style={styles.goback}> {'<'} Back </Text>
-                    <Text style={styles.title}>{this.state.titleGame}</Text>
-                    <View style={styles.contentinfo}>
-                        <Text style={styles.infogame}>Player: {this.state.playerGame}</Text>
-                        <Text style={styles.infogame}>Type: {this.state.typeGame}</Text>
-                        <Text style={styles.infogame}>Year: {this.state.yearGame}</Text>
+                <ScrollView style={styles.wrapper}>
+                    <View style={styles.container}>
+                        <Text onPress={() => goBack()} style={styles.goback}> {'<'} Back </Text>
+                        <Text style={styles.title}>{this.state.titleGame}</Text>
+                        <View style={styles.contentinfo}>
+                            <Text style={styles.infogame}>Player: {this.state.playerGame}</Text>
+                            <Text style={styles.infogame}>Type: {this.state.typeGame}</Text>
+                            <Text style={styles.infogame}>Year: {this.state.yearGame}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.descript}>{this.state.descriptenGame}</Text>
+                        </View>
+                        <Text style={styles.button} onPress={() => Linking.openURL(`${this.state.linkGame}`)}>Wikipedia page</Text>
                     </View>
-                    <View>
-                        <Text style={styles.descript}>{this.state.descriptenGame}</Text>
-                    </View>
-                    <Text style={styles.button} onPress={() => Linking.openURL(`${this.state.linkGame}`)}>Page wikipedia</Text>
-                </View>
+                </ScrollView>
             );
         }
     }
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: '10%',
+        paddingBottom: '10%',
         fontSize: 20,
         color: '#fff',
         textDecorationLine: 'underline'
